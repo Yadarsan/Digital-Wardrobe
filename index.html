@@ -134,19 +134,25 @@
             event.preventDefault();
             const form = event.target;
             const formData = new FormData(form);
+
             fetch('/', {
                 method: 'POST',
                 body: formData,
                 headers: { 'Accept': 'application/json' }
             })
             .then(response => {
+                console.log('Response Status:', response.status); // Log response status
                 if (response.ok) {
                     document.getElementById('responseMessage').textContent = 'Message sent successfully.';
                 } else {
-                    throw new Error('Failed to send message.');
+                    return response.json().then(data => {
+                        console.error('Error Details:', data); // Log detailed error
+                        throw new Error('Failed to send message.');
+                    });
                 }
             })
             .catch(error => {
+                console.error('Fetch Error:', error); // Log fetch error
                 document.getElementById('responseMessage').textContent = error.message;
             });
         }
